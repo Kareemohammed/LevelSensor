@@ -5,7 +5,6 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 import { useRouter } from 'expo-router';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import * as SecureStore from 'expo-secure-store';
 import { app } from '../../../firebase'; 
 
 const auth = getAuth(app);
@@ -19,7 +18,6 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      await SecureStore.setItemAsync('isLoggedIn', 'true'); // Store authentication state
       Alert.alert('Login Successful', 'Welcome back!');
       router.replace('/screens/HomeScreen'); // Navigate to home screen and clear history
     } catch (error) {
@@ -76,69 +74,69 @@ export default function LoginScreen() {
   );
 }
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    form: {
-      width: '90%',
-      padding: 20,
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      borderRadius: 10,
-    },
-    header: {
-      alignItems: 'center',
-      marginBottom: 20,
-    },
-    headerText: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: '#fff',
-      marginTop: 10,
-    },
-    inputContainer: {
-      width: '100%',
-      position: 'relative',
-      marginBottom: 20,
-    },
-    input: {
-      height: 50,
-      borderColor: '#ccc',
-      borderWidth: 1,
-      borderRadius: 10,
-      paddingHorizontal: 15,
-      paddingRight: 50,
-      color: '#fff',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    },
-    eyeIcon: {
-      position: 'absolute',
-      right: 15,
-      top: '50%',
-      transform: [{ translateY: -12 }],
-    },
-    button: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#ff416c',
-      paddingVertical: 15,
-      borderRadius: 10,
-      marginTop: 20,
-    },
-    buttonText: {
-      color: '#fff',
-      fontSize: 18,
-      marginRight: 10,
-    },
-    link: {
-      marginTop: 20,
-      alignItems: 'center',
-    },
-    linkText: {
-      color: '#fff',
-      fontSize: 16,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  form: {
+    width: '90%',
+    padding: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 10,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginTop: 10,
+  },
+  inputContainer: {
+    width: '100%',
+    position: 'relative',
+    marginBottom: 20,
+  },
+  input: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingRight: 50,
+    color: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 15,
+    top: '50%',
+    transform: [{ translateY: -12 }],
+  },
+  button: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ff416c',
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    marginRight: 10,
+  },
+  link: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  linkText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+});

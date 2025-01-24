@@ -15,6 +15,7 @@ import { getAuth } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { app } from "../firebase";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function WelcomeScreen() {
   const [notificationSent, setNotificationSent] = useState(false);
@@ -25,14 +26,14 @@ export default function WelcomeScreen() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const user = auth.currentUser;
-      if (user) {
+      const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
+      if (isLoggedIn === "true") {
         console.log("Redirecting to HomeScreen");
         router.push("/screens/HomeScreen");
       }
     };
 
-    checkAuth();
+    checkAuth(); // Check user authentication state on load
     registerForPushNotificationsAsync();
 
     const notificationListener = Notifications.addNotificationReceivedListener(
@@ -94,13 +95,11 @@ export default function WelcomeScreen() {
     const unsubscribe = onValue(sensorRef, (snapshot) => {
       const data = snapshot.val();
 
-      // Check if the distance exceeds 15 mm and notification has not been sent
       if (data > 15 && !notificationSent) {
         console.log("Triggering notification, distance:", data);
         triggerNotification();
-        setNotificationSent(true); // Ensure notification is only sent once
+        setNotificationSent(true);
       } else if (data <= 15) {
-        // Reset notificationSent flag when distance is back below threshold
         setNotificationSent(false);
       }
     });
@@ -108,12 +107,13 @@ export default function WelcomeScreen() {
     return () => unsubscribe();
   }, [notificationSent]);
 
+  // Schedule notification
   const triggerNotification = async () => {
     try {
       await Notifications.scheduleNotificationAsync({
         content: {
           title: "Alert!",
-          body: "The distance has crossed 15 mm.",
+          body: "The level has crossed 15 mm.",
           sound: true,
         },
         trigger: null, // Immediate trigger
@@ -123,6 +123,15 @@ export default function WelcomeScreen() {
       console.error("Error scheduling notification:", error);
     }
   };
+
+  // Set the notification handler for both background and foreground notifications
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
 
   return (
     <LinearGradient colors={["#141e30", "#243b55"]} style={styles.container}>

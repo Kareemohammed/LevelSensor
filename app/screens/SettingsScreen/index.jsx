@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Platform, BackHandler } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from 'react-native-vector-icons';
 import { useRouter } from 'expo-router';
-import { getAuth } from 'firebase/auth';
+import { getAuth, signOut } from 'firebase/auth';
 
 export default function SettingsScreen() {
   const [userName, setUserName] = useState('');
@@ -18,6 +18,16 @@ export default function SettingsScreen() {
       setUserEmail(currentUser.email);
     }
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("User logged out successfully");
+      router.push("/screens/LoginScreen"); // Redirect to login screen
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   return (
     <LinearGradient colors={['#0a0a0a', '#2b2b2b']} style={styles.container}>
@@ -48,7 +58,7 @@ export default function SettingsScreen() {
           <Text style={styles.cardText}>Help & Support</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={24} color="#fff" />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
